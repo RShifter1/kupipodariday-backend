@@ -4,7 +4,7 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { Wish } from './wish.entity';
 import { CreateWishDto } from './dto/create-wish.dto';
 import { UpdateWishDto } from './dto/update-wish.dto';
@@ -35,7 +35,7 @@ export class WishesService {
     return wish;
   }
 
-  async findMany(query: Partial<Wish> = {}): Promise<Wish[]> {
+  async findMany(query: FindOptionsWhere<Wish> = {}): Promise<Wish[]> {
     return this.wishesRepository.find({ where: query, relations: ['owner'] });
   }
 

@@ -6,10 +6,12 @@ import {
   Param,
   Request,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Offer } from './offer.entity';
 
 @Controller('offers')
 export class OffersController {
@@ -22,13 +24,15 @@ export class OffersController {
     return this.offersService.create(userId, createOfferDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.offersService.findOne({ id: +id });
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findMany(@Request() req) {
-    return this.offersService.findMany(req.query);
+  findMany(@Query() query: Partial<Offer>) {
+    return this.offersService.findMany(query);
   }
 }

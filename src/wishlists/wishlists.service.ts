@@ -23,7 +23,7 @@ export class WishlistsService {
     createWishlistDto: CreateWishlistDto,
   ): Promise<Wishlist> {
     const items = await Promise.all(
-      createWishlistDto.items.map((id) => this.wishesService.findOne({ id })),
+      createWishlistDto.itemsId.map((id) => this.wishesService.findOne({ id })),
     );
     const wishlist = this.wishlistsRepository.create({
       ...createWishlistDto,
@@ -58,12 +58,14 @@ export class WishlistsService {
     if (wishlist.owner.id !== userId) {
       throw new ForbiddenException('Нельзя редактировать чужую подборку');
     }
-    if (updateWishlistDto.items) {
+    if (updateWishlistDto.itemsId) {
       const newItems = await Promise.all(
-        updateWishlistDto.items.map((id) => this.wishesService.findOne({ id })),
+        updateWishlistDto.itemsId.map((id) =>
+          this.wishesService.findOne({ id }),
+        ),
       );
       wishlist.items = newItems;
-      delete updateWishlistDto.items;
+      delete updateWishlistDto.itemsId;
     }
     Object.assign(wishlist, updateWishlistDto);
     return this.wishlistsRepository.save(wishlist);

@@ -25,11 +25,13 @@ export class WishlistsController {
     return this.wishlistsService.create(userId, createWishlistDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   findAll() {
     return this.wishlistsService.findMany();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.wishlistsService.findOne({ id: +id });

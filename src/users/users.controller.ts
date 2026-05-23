@@ -13,10 +13,15 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './user.entity';
+import { WishesService } from '../wishes/wishes.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly wishesService: WishesService,
+  ) {}
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
@@ -24,10 +29,23 @@ export class UsersController {
   }
 
   @Get()
-  findMany(@Query() query: any) {
+  findMany(@Query() query: Partial<User>) {
     return this.usersService.findMany(query);
   }
 
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me')
+  async getMe(@Request() req) {
+    return this.usersService.findOne({ id: req.user.id });
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('me/wishes')
+  async getMyWishes(@Request() req) {
+    return this.wishesService.findMany({ owner: { id: req.user.id } });
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Get('search')
   search(@Query('query') query: string) {
     if (!query) return [];

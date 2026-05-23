@@ -53,7 +53,7 @@ export class UsersService {
     return user;
   }
 
-  async findMany(query: Partial<User> | any): Promise<User[]> {
+  async findMany(query: Partial<User>): Promise<User[]> {
     return this.usersRepository.find({ where: query });
   }
 

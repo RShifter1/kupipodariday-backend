@@ -30,5 +30,5 @@ export class CreateWishlistDto {
   @IsInt({ each: true })
   @IsPositive({ each: true })
   @Type(() => Number)
-  items: number[];
+  itemsId: number[];
 }
