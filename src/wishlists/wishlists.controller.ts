@@ -13,6 +13,7 @@ import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { RequestWithUser } from '../common/request-with-user.interface';
 
 @Controller('wishlists')
 export class WishlistsController {
@@ -20,7 +21,10 @@ export class WishlistsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Request() req, @Body() createWishlistDto: CreateWishlistDto) {
+  create(
+    @Request() req: RequestWithUser,
+    @Body() createWishlistDto: CreateWishlistDto,
+  ) {
     const userId = req.user?.id;
     return this.wishlistsService.create(userId, createWishlistDto);
   }
@@ -42,7 +46,7 @@ export class WishlistsController {
   update(
     @Param('id') id: string,
     @Body() updateWishlistDto: UpdateWishlistDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     const userId = req.user?.id;
     return this.wishlistsService.updateOne(

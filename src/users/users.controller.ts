@@ -15,6 +15,7 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 import { WishesService } from '../wishes/wishes.service';
+import { RequestWithUser } from '../common/request-with-user.interface';
 
 @Controller('users')
 export class UsersController {
@@ -35,13 +36,13 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Get('me')
-  async getMe(@Request() req) {
+  async getMe(@Request() req: RequestWithUser) {
     return this.usersService.findOne({ id: req.user.id });
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('me/wishes')
-  async getMyWishes(@Request() req) {
+  async getMyWishes(@Request() req: RequestWithUser) {
     return this.wishesService.findMany({ owner: { id: req.user.id } });
   }
 
@@ -57,7 +58,7 @@ export class UsersController {
   update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     if (+id !== req.user.id) {
       throw new ForbiddenException('Нельзя редактировать чужой профиль');
@@ -67,7 +68,7 @@ export class UsersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  remove(@Param('id') id: string, @Request() req) {
+  remove(@Param('id') id: string, @Request() req: RequestWithUser) {
     if (+id !== req.user.id) {
       throw new ForbiddenException('Нельзя удалить чужой профиль');
     }

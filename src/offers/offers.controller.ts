@@ -12,6 +12,7 @@ import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Offer } from './offer.entity';
+import { RequestWithUser } from '../common/request-with-user.interface';
 
 @Controller('offers')
 export class OffersController {
@@ -19,7 +20,10 @@ export class OffersController {
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Request() req, @Body() createOfferDto: CreateOfferDto) {
+  create(
+    @Request() req: RequestWithUser,
+    @Body() createOfferDto: CreateOfferDto,
+  ) {
     const userId = req.user?.id;
     return this.offersService.create(userId, createOfferDto);
   }

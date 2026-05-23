@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { RequestWithUser } from '../common/request-with-user.interface';
 
 @Controller()
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post('signin')
-  async signin(@Request() req) {
+  async signin(@Request() req: RequestWithUser) {
     return this.authService.login(req.user);
   }
 }
